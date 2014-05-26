@@ -1,0 +1,37 @@
+function news() {
+    var hasFlash = false;
+    var getActiveXObject = function(name) {
+      try {
+        return new ActiveXObject(name);
+      } catch(e) {}
+    };
+    var getNavigatorPlugin = function(name) {
+      for(var key in navigator.plugins) {
+        var plugin = navigator.plugins[key];
+        if(plugin.name === name){
+          return plugin;
+        }
+      }
+    };
+    var fo;
+    if(navigator.userAgent.toLowerCase().indexOf("msie") > -1){
+      fo = getActiveXObject('AcroPDF.PDF') || getActiveXObject('PDF.PdfCtrl');
+      if (fo) {
+        hasFlash = true;
+      }
+    }
+    else{
+      fo = getNavigatorPlugin('Adobe Acrobat') || getNavigatorPlugin('Chrome PDF Viewer') || getNavigatorPlugin('WebKit built-in PDF');
+      if (fo) {
+        hasFlash = true;
+      }
+    }
+    if($('.check-download').length){
+      $('.check-download').bind('click.hasFlash', function(e){
+        if(!hasFlash){
+          e.preventDefault();
+          alert('Please install appropriate plugin for reading pdf');
+        }
+      });
+    }
+  }
